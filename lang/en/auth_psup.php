@@ -31,23 +31,22 @@ $string['generalsettings'] = 'General settings';
 $string['generalsettings_desc'] = 'General settings';
 $string['createuserandpass'] = 'Create an account on {$a}';
 
-$string['emaildesc'] = 'Email description';
-$string['emaildesc_desc'] = 'Additional information for email form element.';
-$string['emaildesc_default'] = 'The email should be the same as Parcoursup email.';
+$string['emaildesc'] = 'The email should be the same as Parcoursup email.';
 $string['invalidpsupid'] = 'Invalid Parcoursup Identifier.';
 $string['missingpsupid'] = 'Missing parcoursup Identifier.';
-
+$string['mustvalidateemail'] = 'You should validate your email. Please follow instruction sent to you by email when you
+created your account.';
+$string['resendconfirmation:title'] = 'Resend confirmation email';
 $string['psupid'] = 'Parcoursup Identifier';
 $string['psupid_desc'] = 'Parcoursup Identifier';
-$string['psupiddesc'] = 'Additional information for Parcoursup identifier form element.';
-$string['psupiddesc_desc'] = 'Additional information presented below the Parcoursup Identifier form input.';
-$string['psupiddesc_default'] = 'Make sure that your identifier is valid';
-$string['pluginname'] = 'Parcoursup Authentication';
 
-$string['signupdesc'] = 'Signup form description';
-$string['signupdesc_desc'] = 'Additional information for the signup page. Displayed at the top of the form.';
-$string['signupdesc_default'] = 'Account creation is reserved to Parcoursup candidates. Further information will be
-asked later on.';
+$string['psupiddesc'] = 'Make sure that your identifier is valid';
+$string['psupidregexp'] = 'Parcoursup Identifier validation pattern.';
+$string['psupidregexp_desc'] = 'Parcoursup Identifier validation pattern (regular expression). We match
+this as valid Parcoursup identifier.';
+$string['pluginname'] = 'Parcoursup Authentication';
+$string['privacy:metadata'] = 'The Parcoursup authentication plugin does not store any personal data.';
+
 
 $string['userexists'] = 'A user with the same Parcoursup ID has already registered.';
 

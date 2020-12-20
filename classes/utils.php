@@ -23,7 +23,11 @@
 
 namespace auth_psup;
 
+use core\notification;
+use core_renderer;
 use core_user;
+use html_writer;
+use moodle_url;
 
 /**
  * Class utils
@@ -34,6 +38,9 @@ use core_user;
  */
 class utils {
 
+    const USER_PREFS_EMAIL_CONFIRMED = 'auth_psup_emailconfirmed';
+    const USER_PREFS_WANTS_URL = 'auth_psup_wantsurl';
+
     /**
      * Add info to field
      *
@@ -42,7 +49,19 @@ class utils {
      * @param $desc
      */
     public static function add_info_to_field(&$mform, $fieldname, $desc) {
-        $labelfor = \html_writer::label($desc, $fieldname);
+        /** @var core_renderer $icon */
+        $icon = html_writer::tag('i',
+            '',
+            array(
+                'class' => 'icon fa fa-exclamation-triangle text-warning fa-fw',
+                'title' => ''
+            )
+        );
+        $labelfor = \html_writer::label(
+            $icon . $desc,
+            $fieldname,
+            true,
+            array('class' => 'psup-additional-description'));
         $mform->addElement('static', $fieldname . 'desc', '', $labelfor);
     }
 
@@ -61,29 +80,59 @@ class utils {
             'mnethostid' => $CFG->mnet_localhost_id))) {
             $errors['psupid'] = get_string('userexists', 'auth_psup');
         } else {
-            // Check allowed characters.
-            if ($data['psupid'] !== core_user::clean_field($data['psupid'], 'username')) {
-                $errors['psupid'] = \get_string('invalidpsupid', 'auth_psup');
+            // Check against regular expression.
+            if (!static::is_valid_psup_identifier($data['psupid'])) {
+                $errors['psupid'] = get_string('invalidpsupid', 'auth_psup');
             }
-            // Check that it is only number eventually prefixed by 'p'.
-            if ($data['psupid'] !== self::filter_psupid($data['psupid'])) {
-                $errors['psupid'] = \get_string('invalidpsupid', 'auth_psup');
-            }
+
         }
         return $errors;
     }
 
     /**
-     * Add info to field
+     * Check if it is a valid identifier
      *
-     * @param $mform
-     * @param $fieldname
-     * @param $desc
+     * @param string $value
+     * @return bool
+     * @throws \dml_exception
      */
-    public static function filter_psupid($text) {
-        $text = strtolower($text);
-        $text = trim($text);
-        $text = (strpos($text, 'p') === 0) ? $text : 'p' . $text;
-        return $text;
+    public static function is_valid_psup_identifier($value) {
+        $isvalididentifier = true;
+        $regexp = get_config('auth_psup', 'psupidregexp');
+        if ($regexp && (preg_match($regexp, $value) === 0)) {
+            $isvalididentifier = false;
+        }
+        // Check allowed characters.
+        if ($value !== core_user::clean_field($value, 'username')) {
+            $isvalididentifier = false;
+        }
+        return $isvalididentifier;
+    }
+
+    /**
+     * Add a CTA to the top of the page, so we display a link so the user can confirm the account.
+     *
+     * @param $user
+     */
+    public static function display_cta_send_new_email($user) {
+        if (empty(get_user_preferences(static::USER_PREFS_EMAIL_CONFIRMED, false, $user))) {
+            $actions = [
+                [
+                    'title' => get_string('emailconfirmationresend'),
+                    'url' => new moodle_url('/auth/psup/resendconfirmation.php',
+                        array('returnurl' => qualified_me())),
+                    'data' => []
+                ],
+            ];
+            $icon = [
+                'pix' => 'i/warning',
+                'component' => 'core'
+            ];
+
+            notification::add_call_to_action($icon,
+                get_string('mustvalidateemail', 'auth_psup'),
+                $actions
+            );
+        }
     }
 }

@@ -46,21 +46,16 @@ class psup_signup_form extends \moodleform implements \renderable, \templatable 
         $mform->addElement('hidden', 'email2');
         $mform->setType('email2', core_user::get_property_type('email'));
 
-        $desc = get_config('auth_psup', 'signupdesc');
-        $mform->addElement('static', 'signupdesc', '', $desc);
-
         $mform->addElement('text', 'email', get_string('email'), 'maxlength="100" size="25"');
         $mform->setType('email', core_user::get_property_type('email'));
         $mform->addRule('email', get_string('missingemail'), 'required', null, 'client');
         $mform->setForceLtr('email');
-        $desc = get_config('auth_psup', 'emaildesc');
-        utils::add_info_to_field($mform, 'email', $desc);
+        utils::add_info_to_field($mform, 'email', get_string('emaildesc', 'auth_psup'));
 
         $mform->addElement('text', 'psupid', get_string('psupid', 'auth_psup'), 'maxlength="100" size="12" autocapitalize="none"');
         $mform->setType('psupid', PARAM_RAW);
         $mform->addRule('psupid', get_string('missingpsupid', 'auth_psup'), 'required', null, 'client');
-        $desc = get_config('auth_psup', 'psupiddesc');
-        utils::add_info_to_field($mform, 'email', $desc);
+        utils::add_info_to_field($mform, 'email', get_string('psupiddesc', 'auth_psup'));
 
         $mform->addElement('password', 'password', get_string('password'), 'maxlength="32" size="12"');
         $mform->setType('password', core_user::get_property_type('password'));
@@ -117,11 +112,7 @@ class psup_signup_form extends \moodleform implements \renderable, \templatable 
 
     function definition_after_data() {
         $mform = $this->_form;
-        function filter_psupid($text) {
-            return utils::filter_psupid($text);
-        }
-
-        $mform->applyFilter('psupid', '\auth_psup\utils::filter_psupid');
+        $mform->applyFilter('psupid', 'trim');
         $mform->setConstant('username', $mform->getSubmitValue('psupid'));
         $mform->setConstant('email2', $mform->getSubmitValue('email'));
 
@@ -179,8 +170,7 @@ class psup_signup_form extends \moodleform implements \renderable, \templatable 
         $site = get_site();
         $context = [
             'formhtml' => $formhtml,
-            'pagetitle' =>
-                get_string('createuserandpass', 'auth_psup', format_string($site->fullname))
+            'sitename' => format_string($site->fullname)
         ];
         return $context;
     }

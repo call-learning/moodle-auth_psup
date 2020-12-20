@@ -6,7 +6,7 @@ Feature: The user should be logged in directly when signing up.
       | registerauth | psup |
     And the following "users" exist:
       | username | firstname | lastname | email          |
-      | p101010  | John      | Doe      | s1@example.com |
+      | 101010   | John      | Doe      | s1@example.com |
 
   Scenario: As a user I want to create a new account
     Given I am on site homepage
@@ -42,11 +42,12 @@ Feature: The user should be logged in directly when signing up.
     And I should <expectemwrong> "Invalid email address"
 
     Examples:
-      | psupid   | email          | expectreg | expectemwrong | expectpsupidsame | expectpsupidwrong |
-      | P1000000 | s1@example.com | see       | not see       | not see          | not see           |
-      | P1000000 | s4@example.com | not see   | not see       | see              | not see           |
-      | P1000000 | s1             | not see   | see           | not see          | not see           |
-      | p%30303  | S2@EXAMPLE.COM | not see   | not see       | not see          | see               |
-      | 12330302 | S2@EXAMPLE.COM | not see   | not see       | not see          | see               |
-      | P1000001 | s3@EXAMPLE.COM | not see   | not see       | not see          | not see           |
+      | psupid     | email          | expectreg | expectemwrong | expectpsupidsame | expectpsupidwrong |
+      | 1000000    | s1@example.com | see       | not see       | not see          | not see           |
+      | 1000000    | s4@example.com | not see   | not see       | see              | not see           |
+      | 1000000    | s1             | not see   | see           | see              | not see           |
+      | 1000000123 | s5@example.com | not see   | not see       | not see          | see               |
+      | p%30303    | S2@EXAMPLE.COM | not see   | not see       | not see          | see               |
+      | P12330302  | S2@EXAMPLE.COM | not see   | not see       | not see          | see               |
+      | P1000001   | s3@EXAMPLE.COM | not see   | not see       | not see          | not see           |
 

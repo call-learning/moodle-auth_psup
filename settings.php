@@ -29,30 +29,15 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
-    // Introductory explanation.
     $settings->add(new admin_setting_heading('auth_psup/pluginname',
         new lang_string('generalsettings', 'auth_psup'),
         new lang_string('generalsettings_desc', 'auth_psup')));
 
-    // Signup page description.
-    $settings->add(new admin_setting_configtext('auth_psup/signupdesc',
-        get_string('signupdesc', 'auth_psup'),
-        get_string('signupdesc_desc', 'auth_psup'),
-        get_string('signupdesc_default', 'auth_psup'),
-        PARAM_TEXT));
-
-    // Email description description.
-    $settings->add(new admin_setting_configtext('auth_psup/emaildesc',
-        get_string('emaildesc', 'auth_psup'),
-        get_string('emaildesc_desc', 'auth_psup'),
-        get_string('emaildesc_default', 'auth_psup'),
-        PARAM_TEXT));
-
-    // Email description description.
-    $settings->add(new admin_setting_configtext('auth_psup/psupiddesc',
-        get_string('psupiddesc', 'auth_psup'),
-        get_string('psupiddesc_desc', 'auth_psup'),
-        get_string('psupiddesc_default', 'auth_psup'),
+    // Parcoursup identifier regexp validation.
+    $settings->add(new admin_setting_configtext('auth_psup/psupidregexp',
+        get_string('psupidregexp', 'auth_psup'),
+        get_string('psupidregexp_desc', 'auth_psup'),
+        '/^[0-9]{7,8}$/',
         PARAM_TEXT));
 
 }

@@ -23,8 +23,8 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-
-require_once($CFG->libdir.'/authlib.php');
+global $CFG;
+require_once($CFG->libdir . '/authlib.php');
 
 // For further information about authentication plugins please read
 // https://docs.moodle.org/dev/Authentication_plugins.
@@ -54,19 +54,19 @@ class auth_plugin_psup extends auth_plugin_base {
      * @return bool Authentication success or failure.
      */
     public function user_login($username, $password) {
-        global $CFG, $DB;
+        global $CFG, $DB, $OUTPUT;
 
         // Validate the login by using the Moodle user table.
         // Remove if a different authentication method is desired.
         $user = $DB->get_record('user',
-            array('username'=>$username, 'mnethostid'=>$CFG->mnet_localhost_id, 'auth'=> $this->authtype));
+            array('username' => $username, 'mnethostid' => $CFG->mnet_localhost_id, 'auth' => $this->authtype));
 
         // User does not exist.
         if (!$user) {
             return false;
         }
-
-        return validate_internal_user_password($user, $password);
+        $validated = validate_internal_user_password($user, $password);
+        return $validated;
     }
 
     /**
@@ -159,23 +159,6 @@ class auth_plugin_psup extends auth_plugin_base {
     }
 
     /**
-     * Prints a form for configuring this authentication plugin.
-     *
-     * This function is called from admin/auth.php, and outputs a full page with
-     * a form for configuring this plugin.
-     *
-     * @param object $config
-     * @param object $err
-     * @param array $user_fields
-     */
-    public function config_form($config, $err, $user_fields) {
-
-        // A html file for the form can be included here:
-        // include('config.html');
-
-    }
-
-    /**
      * Processes and stores configuration data for the plugin.
      *
      * @param stdClass $config Object with submitted configuration settings (without system magic quotes).
@@ -197,10 +180,17 @@ class auth_plugin_psup extends auth_plugin_base {
     /**
      * Return a form to capture user details for account creation.
      * This is used in /login/signup.php.
+     *
      * @return \moodleform A form which edits a record from the user table.
      */
     function signup_form() {
-        return new \auth_psup\form\psup_signup_form(null, null, 'post', '', array('autocomplete'=>'on'));
+        return new \auth_psup\form\psup_signup_form(
+            null,
+            null,
+            'post',
+            '',
+            array('autocomplete' => 'on')
+        );
     }
 
     /**
@@ -209,11 +199,13 @@ class auth_plugin_psup extends auth_plugin_base {
      *
      * @param object $user new user object
      * @param boolean $notify print notice with link and terminate
+     * @return bool
      */
-    function user_signup($user, $notify=true) {
-        global $CFG, $DB, $SESSION;
-        require_once($CFG->dirroot.'/user/profile/lib.php');
-        require_once($CFG->dirroot.'/user/lib.php');
+    function user_signup($user, $notify = true) {
+        global $CFG, $SESSION;
+        require_once($CFG->dirroot . '/user/profile/lib.php');
+        require_once($CFG->dirroot . '/user/lib.php');
+        require_once($CFG->dirroot . '/user/editlib.php');
 
         $plainpassword = $user->password;
         $user->password = hash_internal_user_password($user->password);
@@ -228,7 +220,7 @@ class auth_plugin_psup extends auth_plugin_base {
                 $user->$field = get_string($field);
             }
         }
-        //$user->confirmed = 1; // Auto confirm user.
+        $user->confirmed = 1; // Auto confirm user.
         $user->id = user_create_user($user, false, false);
 
         user_add_password_history($user->id, $plainpassword);
@@ -238,8 +230,9 @@ class auth_plugin_psup extends auth_plugin_base {
 
         // Save wantsurl against user's profile, so we can return them there upon confirmation.
         if (!empty($SESSION->wantsurl)) {
-            set_user_preference('auth_email_wantsurl', $SESSION->wantsurl, $user);
+            set_user_preference(\auth_psup\utils::USER_PREFS_WANTS_URL, $SESSION->wantsurl, $user);
         }
+        set_user_preference(\auth_psup\utils::USER_PREFS_EMAIL_CONFIRMED, '0', $user);
 
         // Trigger event.
         \core\event\user_created::create_from_userid($user->id)->trigger();
@@ -250,7 +243,7 @@ class auth_plugin_psup extends auth_plugin_base {
         complete_user_login($user);
         \core\session\manager::apply_concurrent_login_limit($user->id, session_id());
 
-        if (! send_confirmation_email($user)) {
+        if (!send_confirmation_email($user)) {
             print_error('auth_emailnoemail', 'auth_email');
         }
 
@@ -272,24 +265,31 @@ class auth_plugin_psup extends auth_plugin_base {
      *
      * @param string $username
      * @param string $confirmsecret
+     * @return int
      */
     function user_confirm($username, $confirmsecret) {
         global $CFG;
-        require_once($CFG->dirroot.'/user/lib.php');
+        require_once($CFG->dirroot . '/user/lib.php');
         $user = get_complete_user_data('username', $username);
 
         if (!empty($user)) {
+            $emailconfirmed = get_user_preferences(\auth_psup\utils::USER_PREFS_EMAIL_CONFIRMED, false, $user);
             if ($user->auth != $this->authtype) {
                 return AUTH_CONFIRM_ERROR;
-
-            } else if ($user->secret == $confirmsecret && $user->confirmed) {
+            } else if ($user->secret == $confirmsecret && $emailconfirmed) {
                 return AUTH_CONFIRM_ALREADY;
 
-            } else if ($user->secret == $confirmsecret) {   // They have provided the secret key to get in
-                $user->confirmed = 1;
-                user_update_user($user, false);
+            } else if ($user->secret == $confirmsecret) {   // They have provided the secret key to confirm email.
+                if ($wantsurl = get_user_preferences(\auth_psup\utils::USER_PREFS_WANTS_URL, false, $user)) {
+                    global $SESSION;
+                    // Ensure user gets returned to page they were trying to access before signing up.
+                    $SESSION->wantsurl = $wantsurl;
+                    unset_user_preference('auth_email_wantsurl', $user);
+                }
+                set_user_preference(\auth_psup\utils::USER_PREFS_EMAIL_CONFIRMED, '1', $user);
                 return AUTH_CONFIRM_OK;
             }
+            return AUTH_CONFIRM_FAIL; // Does not match.
         } else {
             return AUTH_CONFIRM_ERROR;
         }
