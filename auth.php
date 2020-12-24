@@ -243,8 +243,9 @@ class auth_plugin_psup extends auth_plugin_base {
         complete_user_login($user);
         \core\session\manager::apply_concurrent_login_limit($user->id, session_id());
 
+        $notificationmessage = get_string('emailconfirmsent', '', $user->email);
         if (!send_confirmation_email($user)) {
-            print_error('auth_emailnoemail', 'auth_email');
+            $notificationmessage = get_string('auth_emailnoemail', 'auth_email');
         }
 
         if ($notify) {
@@ -254,7 +255,7 @@ class auth_plugin_psup extends auth_plugin_base {
             $PAGE->set_title($emailconfirm);
             $PAGE->set_heading($PAGE->course->fullname);
             echo $OUTPUT->header();
-            notice(get_string('emailconfirmsent', '', $user->email), "$CFG->wwwroot/index.php");
+            notice($notificationmessage, "$CFG->wwwroot/index.php");
         } else {
             return true;
         }
