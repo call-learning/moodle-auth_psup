@@ -57,7 +57,7 @@ class psup_signup_form extends \moodleform implements \renderable, \templatable 
         $mform->addRule('psupid', get_string('missingpsupid', 'auth_psup'), 'required', null, 'client');
         utils::add_info_to_field($mform, 'email', get_string('psupiddesc', 'auth_psup'));
 
-        $mform->addElement('password', 'password', get_string('password'), 'maxlength="32" size="12"');
+        $mform->addElement('passwordunmask', 'password', get_string('password'), 'maxlength="32" size="12"');
         $mform->setType('password', core_user::get_property_type('password'));
         $mform->addRule('password', get_string('missingpassword'), 'required', null, 'client');
         if (!empty($CFG->passwordpolicy)) {
