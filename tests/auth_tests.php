@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * File containing tests for test_psup_auth.php.
@@ -23,17 +23,9 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+use auth_psup\utils;
 
-// For installation and usage of PHPUnit within Moodle please read:
-// https://docs.moodle.org/dev/PHPUnit
-//
-// Documentation for writing PHPUnit tests for Moodle can be found here:
-// https://docs.moodle.org/dev/PHPUnit_integration
-// https://docs.moodle.org/dev/Writing_PHPUnit_tests
-//
-// The official PHPUnit homepage is at:
-// https://phpunit.de
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * The test_psup_auth.php test class.
@@ -42,15 +34,15 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2020 Laurent David - CALL Learning <laurent@call-learning.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class auth__tests extends advanced_testcase {
+class auth_psup_auth_testcase extends advanced_testcase {
 
     protected $authplugin = null;
     protected $userdata = null;
 
     public function setUp() {
         global $CFG;
-        require_once($CFG->dirroot.'/auth/psup/auth.php');
-        require_once($CFG->dirroot.'/user/editlib.php');
+        require_once($CFG->dirroot . '/auth/psup/auth.php');
+        require_once($CFG->dirroot . '/user/editlib.php');
         $this->resetAfterTest();
         set_config('registerauth', 'psup');
         $this->authplugin = new auth_plugin_psup();
@@ -63,22 +55,23 @@ class auth__tests extends advanced_testcase {
         ];
         $this->userdata = signup_setup_new_user($userdata); // Complete user profile.
     }
+
     public function test_utils_psup_identifier() {
         $this->resetAfterTest();
-        $this->assertTrue(\auth_psup\utils::is_valid_psup_identifier('1234556')); //Ok.
-        $this->assertFalse(\auth_psup\utils::is_valid_psup_identifier('123456789')); // Too long.
-        $this->assertFalse(\auth_psup\utils::is_valid_psup_identifier('12345')); // Too short.
-        $this->assertFalse(\auth_psup\utils::is_valid_psup_identifier('000000')); // Same repetitive letter.
-        $this->assertFalse(\auth_psup\utils::is_valid_psup_identifier('111111')); // Same repetitive letter.
-        $this->assertFalse(\auth_psup\utils::is_valid_psup_identifier('p120210')); // A letter.
-        set_config('psupidregexp',  '/^.*$/', 'auth_psup');
-        $this->assertTrue(\auth_psup\utils::is_valid_psup_identifier('1a20210')); // We allowed anything.
+        $this->assertTrue(utils::is_valid_psup_identifier('1234556')); // Ok.
+        $this->assertFalse(utils::is_valid_psup_identifier('123456789')); // Too long.
+        $this->assertFalse(utils::is_valid_psup_identifier('12345')); // Too short.
+        $this->assertFalse(utils::is_valid_psup_identifier('000000')); // Same repetitive letter.
+        $this->assertFalse(utils::is_valid_psup_identifier('111111')); // Same repetitive letter.
+        $this->assertFalse(utils::is_valid_psup_identifier('p120210')); // A letter.
+        set_config('psupidregexp', '/^.*$/', 'auth_psup');
+        $this->assertTrue(utils::is_valid_psup_identifier('1a20210')); // We allowed anything.
     }
 
     public function test_create_send_email() {
         global $CFG;
-        require_once($CFG->dirroot.'/auth/psup/auth.php');
-        require_once($CFG->dirroot.'/user/editlib.php');
+        require_once($CFG->dirroot . '/auth/psup/auth.php');
+        require_once($CFG->dirroot . '/user/editlib.php');
         $emailsink = $this->redirectEmails();
         @$this->authplugin->user_signup($this->userdata, false);
         $this->assertEquals(1, $emailsink->count());
@@ -90,34 +83,36 @@ class auth__tests extends advanced_testcase {
         $this->assertEquals('Firstname', $user->firstname);
         $this->assertEquals('Lastname', $user->lastname);
     }
+
     public function test_create_event() {
         global $CFG;
-        require_once($CFG->dirroot.'/auth/psup/auth.php');
-        require_once($CFG->dirroot.'/user/editlib.php');
+        require_once($CFG->dirroot . '/auth/psup/auth.php');
+        require_once($CFG->dirroot . '/user/editlib.php');
         $eventsink = $this->redirectEvents();
         @$this->authplugin->user_signup($this->userdata, false);
         $events = $eventsink->get_events();
         $this->assertEquals(2, $eventsink->count());
         $this->assertEquals('\core\event\user_created', $events[0]->get_data()['eventname']);
         $this->assertEquals('\core\event\user_loggedin', $events[1]->get_data()['eventname']);
-        $this->assertEquals(['username'=>'12345678'], $events[1]->get_data()['other']);
+        $this->assertEquals(['username' => '12345678'], $events[1]->get_data()['other']);
     }
 
     public function test_confirm_email() {
         global $CFG;
-        require_once($CFG->dirroot.'/auth/psup/auth.php');
-        require_once($CFG->dirroot.'/user/editlib.php');
+        require_once($CFG->dirroot . '/auth/psup/auth.php');
+        require_once($CFG->dirroot . '/user/editlib.php');
         @$this->authplugin->user_signup($this->userdata, false);
         $user = core_user::get_user_by_email('email@example.com');
-        $this->assertEquals('0',get_user_preferences(\auth_plugin_psup::USER_PREFS_EMAIL_CONFIRMED, null, $user));
+        $this->assertEquals('0', get_user_preferences(utils::USER_PREFS_EMAIL_CONFIRMED, null, $user));
         $this->assertEquals(AUTH_CONFIRM_FAIL, $this->authplugin->user_confirm($this->userdata->username, '123345'));
-        $this->assertEquals('0',get_user_preferences(\auth_plugin_psup::USER_PREFS_EMAIL_CONFIRMED, null, $user));
+        $this->assertEquals('0', get_user_preferences(utils::USER_PREFS_EMAIL_CONFIRMED, null, $user));
         $this->assertEquals(AUTH_CONFIRM_ERROR, $this->authplugin->user_confirm('AZERTY', '123345'));
-        $this->assertEquals('0',get_user_preferences(\auth_plugin_psup::USER_PREFS_EMAIL_CONFIRMED, null, $user));
-        $this->assertEquals(AUTH_CONFIRM_OK, $this->authplugin->user_confirm($this->userdata->username, $user->secret ));
+        $this->assertEquals('0', get_user_preferences(utils::USER_PREFS_EMAIL_CONFIRMED, null, $user));
+        $this->assertEquals(AUTH_CONFIRM_OK, $this->authplugin->user_confirm($this->userdata->username, $user->secret));
         check_user_preferences_loaded($user, 0); // This is a hack so we get the value from db instead of cache.
         // If not this will fail as it is the previous value that is returned.
-        $this->assertEquals('1',get_user_preferences(\auth_plugin_psup::USER_PREFS_EMAIL_CONFIRMED, null, $user));
+        $this->assertEquals('1', get_user_preferences(utils::USER_PREFS_EMAIL_CONFIRMED, null, $user));
+
     }
 }
 

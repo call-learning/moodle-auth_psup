@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Plugin strings are defined here.
@@ -38,7 +38,7 @@ $string['missingpsupid'] = 'Identifiant Parcoursup manquant.';
 $string['mustvalidateemail'] = 'Vous devez valider votre email. Veuillez suivre les instructions envoyées par email
 lors de la création de votre compte.';
 $string['resendconfirmation:title'] = 'Renvoi de l\'email de confirmation';
-$string['psupid'] = 'Indentifiant Parcoursup';
+$string['psupid'] = 'Identifiant Parcoursup';
 $string['psupiddesc'] = 'Assurez-vous que votre identifiant est valide';
 
 $string['psupidregexp'] = 'Expression régulière pour valider les identifiants Parcoursup.';

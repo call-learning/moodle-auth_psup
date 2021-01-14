@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Authentication class for psup is defined here.
@@ -183,7 +183,7 @@ class auth_plugin_psup extends auth_plugin_base {
      *
      * @return \moodleform A form which edits a record from the user table.
      */
-    function signup_form() {
+    public function signup_form() {
         return new \auth_psup\form\psup_signup_form(
             null,
             null,
@@ -200,8 +200,11 @@ class auth_plugin_psup extends auth_plugin_base {
      * @param object $user new user object
      * @param boolean $notify print notice with link and terminate
      * @return bool
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
      */
-    function user_signup($user, $notify = true) {
+    public function user_signup($user, $notify = true) {
         global $CFG, $SESSION;
         require_once($CFG->dirroot . '/user/profile/lib.php');
         require_once($CFG->dirroot . '/user/lib.php');
@@ -239,7 +242,6 @@ class auth_plugin_psup extends auth_plugin_base {
         if (!$user = get_complete_user_data('id', $user->id)) {
             throw new moodle_exception('cannotfinduser', '', '', $user->id);
         }
-        //
         complete_user_login($user);
         \core\session\manager::apply_concurrent_login_limit($user->id, session_id());
 
@@ -267,8 +269,10 @@ class auth_plugin_psup extends auth_plugin_base {
      * @param string $username
      * @param string $confirmsecret
      * @return int
+     * @throws coding_exception
+     * @throws dml_exception
      */
-    function user_confirm($username, $confirmsecret) {
+    public function user_confirm($username, $confirmsecret) {
         global $CFG;
         require_once($CFG->dirroot . '/user/lib.php');
         $user = get_complete_user_data('username', $username);

@@ -35,7 +35,7 @@ require_once($CFG->dirroot . '/user/editlib.php');
 //require_once('lib.php');
 
 class psup_signup_form extends \moodleform implements \renderable, \templatable {
-    function definition() {
+    public function definition() {
         global $USER, $CFG;
 
         $mform = $this->_form;
@@ -46,6 +46,16 @@ class psup_signup_form extends \moodleform implements \renderable, \templatable 
         $mform->addElement('hidden', 'email2');
         $mform->setType('email2', core_user::get_property_type('email'));
 
+        $namefields = useredit_get_required_name_fields();
+        foreach ($namefields as $field) {
+            $mform->addElement('text', $field, get_string($field), 'maxlength="100" size="30"');
+            $mform->setType($field, core_user::get_property_type('firstname'));
+            $stringid = 'missing' . $field;
+            if (!get_string_manager()->string_exists($stringid, 'moodle')) {
+                $stringid = 'required';
+            }
+            $mform->addRule($field, get_string($stringid), 'required', null, 'client');
+        }
         $mform->addElement('text', 'email', get_string('email'), 'maxlength="100" size="25"');
         $mform->setType('email', core_user::get_property_type('email'));
         $mform->addRule('email', get_string('missingemail'), 'required', null, 'client');
@@ -65,12 +75,6 @@ class psup_signup_form extends \moodleform implements \renderable, \templatable 
         }
 
         $mform->addElement('header', 'supplyinfo', get_string('supplyinfo'), '');
-
-        $namefields = useredit_get_required_name_fields();
-        foreach ($namefields as $field) {
-            $mform->addElement('text', $field, get_string($field), 'maxlength="100" size="30"');
-            $mform->setType($field, core_user::get_property_type('firstname'));
-        }
 
         $mform->addElement('text', 'city', get_string('city'), 'maxlength="120" size="20"');
         $mform->setType('city', core_user::get_property_type('city'));
@@ -110,7 +114,7 @@ class psup_signup_form extends \moodleform implements \renderable, \templatable 
 
     }
 
-    function definition_after_data() {
+    public function definition_after_data() {
         $mform = $this->_form;
         $mform->applyFilter('psupid', 'trim');
         $mform->setConstant('username', $mform->getSubmitValue('psupid'));
@@ -161,6 +165,7 @@ class psup_signup_form extends \moodleform implements \renderable, \templatable 
      *
      * @param \renderer_base $output Used to do a final render of any components that need to be rendered for export.
      * @return array
+     * @throws \moodle_exception
      */
     public function export_for_template(\renderer_base $output) {
         ob_start();
