@@ -36,6 +36,10 @@ function xmldb_auth_psup_upgrade($oldversion) {
 
     $dbman = $DB->get_manager();
 
+    if ($oldversion < 2020120209) {
+        set_config('psupidregexp', '/^[0-9]{6,8}$/', 'auth_psup');
+        upgrade_plugin_savepoint(true, 2020120209, 'auth', 'psup');
+    }
     // For further information please read the Upgrade API documentation:
     // https://docs.moodle.org/dev/Upgrade_API
     //

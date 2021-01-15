@@ -37,7 +37,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('auth_psup/psupidregexp',
         get_string('psupidregexp', 'auth_psup'),
         get_string('psupidregexp_desc', 'auth_psup'),
-        '/^[0-9]{7,8}$/',
+        '/^[0-9]{6,8}$/',
         PARAM_TEXT));
 
 }
