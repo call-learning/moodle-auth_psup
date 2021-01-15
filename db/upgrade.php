@@ -30,6 +30,8 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @param int $oldversion
  * @return bool
+ * @throws downgrade_exception
+ * @throws upgrade_exception
  */
 function xmldb_auth_psup_upgrade($oldversion) {
     global $DB;
@@ -40,12 +42,6 @@ function xmldb_auth_psup_upgrade($oldversion) {
         set_config('psupidregexp', '/^[0-9]{6,8}$/', 'auth_psup');
         upgrade_plugin_savepoint(true, 2020120209, 'auth', 'psup');
     }
-    // For further information please read the Upgrade API documentation:
-    // https://docs.moodle.org/dev/Upgrade_API
-    //
-    // You will also have to create the db/install.xml file by using the XMLDB Editor.
-    // Documentation for the XMLDB Editor can be found at:
-    // https://docs.moodle.org/dev/XMLDB_editor
 
     return true;
 }

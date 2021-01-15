@@ -264,6 +264,24 @@ class auth_plugin_psup extends auth_plugin_base {
     }
 
     /**
+     * Updates the user's password.
+     *
+     * Called when the user password is updated.
+     *
+     * @param object $user User table object
+     * @param string $newpassword Plaintext password
+     * @return boolean result
+     * @throws dml_exception
+     */
+    public function user_update_password($user, $newpassword) {
+        $user = get_complete_user_data('id', $user->id);
+        // This will also update the stored hash to the latest algorithm
+        // if the existing hash is using an out-of-date algorithm (or the
+        // legacy md5 algorithm).
+        return update_internal_user_password($user, $newpassword);
+    }
+
+    /**
      * Confirm the new user as registered.
      *
      * @param string $username
