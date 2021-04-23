@@ -115,8 +115,9 @@ class utils {
      * @param $user
      */
     public static function display_cta_send_new_email($user) {
-        if ($user->auth == 'psup' &&
-            empty(get_user_preferences(static::USER_PREFS_EMAIL_CONFIRMED, false, $user))) {
+        if ($user->auth == 'psup'
+            && signup_get_user_confirmation_authplugin()
+            && empty(get_user_preferences(static::USER_PREFS_EMAIL_CONFIRMED, false, $user))) {
             $actions = [
                 [
                     'title' => get_string('emailconfirmationresend'),
