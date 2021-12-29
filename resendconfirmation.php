@@ -35,7 +35,6 @@ $PAGE->set_title(get_string('resendconfirmation:title', 'auth_psup'));
 $PAGE->set_heading(get_string('resendconfirmation:title', 'auth_psup'));
 
 echo $OUTPUT->header();
-/* @var core_renderer $OUTPUT */
 if (!send_confirmation_email($USER)) {
     echo $OUTPUT->notification(get_string('emailconfirmsentfailure'), \core\output\notification::NOTIFY_ERROR);
 } else {

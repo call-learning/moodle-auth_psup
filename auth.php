@@ -54,7 +54,7 @@ class auth_plugin_psup extends auth_plugin_base {
      * @return bool Authentication success or failure.
      */
     public function user_login($username, $password) {
-        global $CFG, $DB, $OUTPUT;
+        global $CFG, $DB;
 
         // Validate the login by using the Moodle user table.
         // Remove if a different authentication method is desired.
@@ -250,6 +250,10 @@ class auth_plugin_psup extends auth_plugin_base {
             $notificationmessage = get_string('auth_emailnoemail', 'auth_email');
         }
 
+        $defaultroleid = get_config('auth_psup', 'defaultsystemrole');
+        if (!empty($defaultroleid)) {
+            role_assign($defaultroleid, $user->id, context_system::instance()->id);
+        }
         if ($notify) {
             global $CFG, $PAGE, $OUTPUT;
             $emailconfirm = get_string('emailconfirm');

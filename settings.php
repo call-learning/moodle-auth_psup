@@ -40,4 +40,17 @@ if ($ADMIN->fulltree) {
         '/^[0-9]{6,8}$/',
         PARAM_TEXT));
 
+    // Parcoursup default system role at creation.
+    if (!during_initial_install()) {
+        $context = context_system::instance();
+        $roles = get_assignable_roles($context);
+        $rolesselect = role_fix_names($roles, $context, ROLENAME_ALIAS, true);
+        $rolesselect[0] = get_string('none');
+        $settings->add(new admin_setting_configselect('auth_psup/defaultsystemrole',
+            get_string('defaultsystemrole', 'auth_psup'),
+            get_string('defaultsystemrole_desc', 'auth_psup'),
+            0,
+            $rolesselect));
+    }
+
 }

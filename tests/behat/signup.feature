@@ -13,7 +13,7 @@ Feature: The user should be logged in directly when signing up.
     And I follow "Log in"
     When I press "Create new account"
     And I set the following fields to these values:
-      | Parcoursup Identifier | p0011010              |
+      | Parcoursup Identifier | 0011010               |
       | Password              | P@ssword#101A         |
       | Email address         | user1@address.invalid |
       | First name            | User1                 |
@@ -24,7 +24,6 @@ Feature: The user should be logged in directly when signing up.
     And I press "Continue"
     And I should see "User1 L1" in the ".usermenu" "css_element"
 
-  @javascript
   Scenario Outline: Field validation during registration registration
     And I am on site homepage
     And I follow "Log in"
@@ -36,18 +35,19 @@ Feature: The user should be logged in directly when signing up.
       | First name            | Jane          |
       | Surname               | Doe           |
     And I press "Create my new account"
-    Then I should <expectpsupidsame> "A user with the same Parcoursup Identifier has already registered."
-    Then I should <expectpsupidwrong> "Invalid Parcoursup Identifier."
+    Then I should <expectpsupidsame> "A user with the same Parcoursup ID has already registered"
+    Then I should <expectpsupidwrong> "Invalid Parcoursup Identifier"
     And I should <expectreg> "This email address is already registered. Perhaps you created an account in the past?"
     And I should <expectemwrong> "Invalid email address"
 
     Examples:
       | psupid     | email          | expectreg | expectemwrong | expectpsupidsame | expectpsupidwrong |
-      | 1000000    | s1@example.com | see       | not see       | not see          | not see           |
-      | 1000000    | s4@example.com | not see   | not see       | see              | not see           |
-      | 1000000    | s1             | not see   | see           | see              | not see           |
       | 1000000123 | s5@example.com | not see   | not see       | not see          | see               |
+      | 101010     | s4@example.com | not see   | not see       | see              | not see           |
       | p%30303    | S2@EXAMPLE.COM | not see   | not see       | not see          | see               |
       | P12330302  | S2@EXAMPLE.COM | not see   | not see       | not see          | see               |
-      | P1000001   | s3@EXAMPLE.COM | not see   | not see       | not see          | not see           |
+      | P1000001   | s3@EXAMPLE.COM | not see   | not see       | not see          | see               |
+      | 1000000    | s1             | not see   | see           | not see          | not see           |
+      | 1000000    | s1@example.com | see       | not see       | not see          | not see           |
+
 

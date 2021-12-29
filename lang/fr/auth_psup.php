@@ -28,24 +28,23 @@ defined('MOODLE_INTERNAL') || die();
 $string['auth_description'] = 'La création d’un compte est réservée aux candidats voulant
  postuler pour le concours véto post-bac.
 Des informations supplémentaires seront demandées après le remplissage du questionnaire de pré-orientation.';
+$string['defaultsystemrole'] = 'Rôle à la création de l\'utilisateur';
+$string['defaultsystemrole_desc'] = 'Rôle à la création de l\'utilisateur. Ceci est un rôle système assigné à l\'utilisateur.
+ Par défaut aucun rôle n\'est assigné.';
+$string['emaildesc'] = '<span>L\'email doit <b> impérativement </b> être le même que celui fourni à Parcoursup.<span>';
 $string['generalsettings'] = 'Paramètres généraux';
 $string['generalsettings_desc'] = 'Paramètres généraux';
 $string['createuserandpass'] = 'Créer un compte sur {$a}';
-
-$string['emaildesc'] = '<span>L\'email doit <b> impérativement </b> être le même que celui fourni à Parcoursup.<span>';
 $string['invalidpsupid'] = 'Identifiant Parcoursup invalide (un identifiant valide est constitué de maximum 8 chiffres sans aucune lettre).';
 $string['missingpsupid'] = 'Identifiant Parcoursup manquant.';
 $string['mustvalidateemail'] = 'Vous devez valider votre email. Veuillez suivre les instructions envoyées par email
 lors de la création de votre compte.';
 $string['resendconfirmation:title'] = 'Renvoi de l\'email de confirmation';
+$string['pluginname'] = 'Authentification Parcoursup';
 $string['psupid'] = 'Identifiant Parcoursup';
 $string['psupiddesc'] = 'Assurez-vous que votre identifiant est valide';
-
 $string['psupidregexp'] = 'Expression régulière pour valider les identifiants Parcoursup.';
 $string['psupidregexp_desc'] = 'Expression régulière de validation pour les identifiants Parcoursup. Cela permet
 de valider les identifiants Parcoursup.';
-$string['pluginname'] = 'Authentification Parcoursup';
 $string['privacy:metadata'] = 'Le plugin d\'authentification PSup (Parcoursup) ne stocke pas d\'information personelle';
-
 $string['userexists'] = 'Un utilisateur avec le même identifiant Parcoursup a déjà été créé.';
-

@@ -38,15 +38,21 @@ use moodle_url;
  */
 class utils {
 
+    /**
+     * Settings and flags for a newly created user
+     */
     const USER_PREFS_EMAIL_CONFIRMED = 'auth_psup_emailconfirmed';
+    /**
+     * Settings and flags for a newly created user
+     */
     const USER_PREFS_WANTS_URL = 'auth_psup_wantsurl';
 
     /**
      * Add info to field
      *
-     * @param $mform
-     * @param $fieldname
-     * @param $desc
+     * @param object $mform
+     * @param string $fieldname
+     * @param string $desc
      */
     public static function add_info_to_field(&$mform, $fieldname, $desc) {
         /** @var core_renderer $icon */
@@ -68,9 +74,8 @@ class utils {
     /**
      * Validate parcoursup identifier
      *
-     * @param $mform
-     * @param $fieldname
-     * @param $desc
+     * @param array $data
+     * @param array $files
      */
     public static function validate_psup_identifier($data, $files) {
         global $DB, $CFG;
@@ -112,7 +117,7 @@ class utils {
     /**
      * Add a CTA to the top of the page, so we display a link so the user can confirm the account.
      *
-     * @param $user
+     * @param object $user
      */
     public static function display_cta_send_new_email($user) {
         if ($user->auth == 'psup'

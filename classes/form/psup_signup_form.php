@@ -13,14 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-/**
- * User sign-up form for Psup.
- *
- * @package     auth_psup
- * @copyright   2020 Laurent David - CALL Learning <laurent@call-learning.fr>
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace auth_psup\form;
 
 use auth_psup\utils;
@@ -31,12 +23,21 @@ global $CFG;
 require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->dirroot . '/user/profile/lib.php');
 require_once($CFG->dirroot . '/user/editlib.php');
-
-//require_once('lib.php');
-
+/**
+ * User sign-up form for Psup.
+ *
+ * @package     auth_psup
+ * @copyright   2020 Laurent David - CALL Learning <laurent@call-learning.fr>
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class psup_signup_form extends \moodleform implements \renderable, \templatable {
+    /**
+     * Form definition
+     *
+     * @return void
+     */
     public function definition() {
-        global $USER, $CFG;
+        global $CFG;
 
         $mform = $this->_form;
 
@@ -83,8 +84,8 @@ class psup_signup_form extends \moodleform implements \renderable, \templatable 
         }
 
         $country = get_string_manager()->get_list_of_countries();
-        $default_country[''] = get_string('selectacountry');
-        $country = array_merge($default_country, $country);
+        $defaultcountry[''] = get_string('selectacountry');
+        $country = array_merge($defaultcountry, $country);
         $mform->addElement('select', 'country', get_string('country'), $country);
 
         if (!empty($CFG->country)) {
@@ -114,6 +115,9 @@ class psup_signup_form extends \moodleform implements \renderable, \templatable 
 
     }
 
+    /**
+     * Setup form with data
+     */
     public function definition_after_data() {
         $mform = $this->_form;
         $mform->applyFilter('psupid', 'trim');
@@ -165,7 +169,6 @@ class psup_signup_form extends \moodleform implements \renderable, \templatable 
      *
      * @param \renderer_base $output Used to do a final render of any components that need to be rendered for export.
      * @return array
-     * @throws \moodle_exception
      */
     public function export_for_template(\renderer_base $output) {
         ob_start();
