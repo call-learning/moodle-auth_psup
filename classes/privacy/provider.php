@@ -21,9 +21,6 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace auth_psup\privacy;
-use core_privacy\local\metadata\collection;
-
-defined('MOODLE_INTERNAL') || die();
 /**
  * Privacy Subsystem for auth_cas implementing null_provider.
  *

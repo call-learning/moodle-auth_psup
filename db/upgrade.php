@@ -13,18 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-/**
- * Plugin upgrade steps are defined here.
- *
- * @package     auth_psup
- * @category    upgrade
- * @copyright   2020 Laurent David - CALL Learning <laurent@call-learning.fr>
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Execute auth_psup upgrade from the given old version.
  *

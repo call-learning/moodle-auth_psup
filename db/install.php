@@ -13,20 +13,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
- * Code to be executed after the plugin's database scheme has been installed is defined here.
+ * Custom code to be run on installing the plugin.
  *
  * @package     auth_psup
  * @category    upgrade
  * @copyright   2020 Laurent David - CALL Learning <laurent@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-defined('MOODLE_INTERNAL') || die();
-
-/**
- * Custom code to be run on installing the plugin.
  */
 function xmldb_auth_psup_install() {
 

@@ -22,8 +22,13 @@
  * @copyright   2020 Laurent David - CALL Learning <laurent@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+namespace auth_psup;
+use advanced_testcase;
+use auth_plugin_psup;
 use auth_psup\utils;
+use context_system;
+use core_user;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;

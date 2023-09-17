@@ -24,6 +24,7 @@
 namespace auth_psup;
 
 use core\notification;
+use core\session\manager;
 use core_renderer;
 use core_user;
 use html_writer;
@@ -141,5 +142,24 @@ class utils {
                 $actions
             );
         }
+    }
+
+    /**
+     *  Get the right label for username (either username or parcoursupid)
+     *
+     * @param int $userid
+     * @return string
+     */
+    public static function get_username_label($userid) {
+        global $USER;
+        $iscurrentuser = $userid == $USER->id && !manager::is_loggedinas();
+
+        if ((!isloggedin() || $iscurrentuser) && $userid) {
+            $currentuser = core_user::get_user($userid);
+            if ($currentuser && $currentuser->auth == 'psup') {
+                return get_string('psupid', 'auth_psup');
+            }
+        }
+        return get_string('username');
     }
 }
