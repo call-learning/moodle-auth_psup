@@ -13,13 +13,19 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Custom code to be run on installing the plugin.
  *
  * @package     auth_psup
- * @category    upgrade
  * @copyright   2020 Laurent David - CALL Learning <laurent@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/**
+ * Custom code to be run on installing the plugin.
+ *
+ * @return true
  */
 function xmldb_auth_psup_install() {
 

@@ -75,8 +75,6 @@ class psup_signup_form extends \moodleform implements \renderable, \templatable 
             $mform->addElement('static', 'passwordpolicyinfo', '', print_password_policy());
         }
 
-        $mform->addElement('header', 'supplyinfo', get_string('supplyinfo'), '');
-
         $mform->addElement('text', 'city', get_string('city'), 'maxlength="120" size="20"');
         $mform->setType('city', core_user::get_property_type('city'));
         if (!empty($CFG->defaultcity)) {
@@ -178,7 +176,7 @@ class psup_signup_form extends \moodleform implements \renderable, \templatable 
         $site = get_site();
         $context = [
             'formhtml' => $formhtml,
-            'sitename' => format_string($site->fullname)
+            'sitename' => format_string($site->fullname),
         ];
         return $context;
     }

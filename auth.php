@@ -59,7 +59,7 @@ class auth_plugin_psup extends auth_plugin_base {
         // Validate the login by using the Moodle user table.
         // Remove if a different authentication method is desired.
         $user = $DB->get_record('user',
-            array('username' => $username, 'mnethostid' => $CFG->mnet_localhost_id, 'auth' => $this->authtype));
+            ['username' => $username, 'mnethostid' => $CFG->mnet_localhost_id, 'auth' => $this->authtype]);
 
         // User does not exist.
         if (!$user) {
@@ -189,7 +189,7 @@ class auth_plugin_psup extends auth_plugin_base {
             null,
             'post',
             '',
-            array('autocomplete' => 'on')
+            ['autocomplete' => 'on']
         );
     }
 

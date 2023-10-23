@@ -1,8 +1,8 @@
 # Parcoursup Authentication #
 
-TODO Describe the plugin shortly here.
+Self authentication process.
 
-TODO Provide more detailed description here.
+[![CI Tests (Testing)](https://github.com/call-learning/moodle-auth_psup/actions/workflows/ci.yml/badge.svg?branch=MOODLE_401_STABLE)](https://github.com/call-learning/moodle-auth_psup/actions/workflows/ci.yml)
 
 ## License ##
 

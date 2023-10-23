@@ -13,15 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-/**
- * File containing tests for test_psup_auth.php.
- *
- * @package     auth_psup
- * @category    test
- * @copyright   2020 Laurent David - CALL Learning <laurent@call-learning.fr>
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 namespace auth_psup;
 use advanced_testcase;
 use auth_plugin_psup;
@@ -63,7 +54,7 @@ class auth_test extends advanced_testcase {
      *
      * @return void
      */
-    public function setUp() {
+    public function setUp(): void {
         $this->resetAfterTest();
         set_config('registerauth', 'psup');
         $this->authplugin = new auth_plugin_psup();
@@ -72,10 +63,10 @@ class auth_test extends advanced_testcase {
             'email' => 'email@example.com',
             'password' => 'n@wPassw0%rd',
             'firstname' => 'Firstname',
-            'lastname' => 'Lastname'
+            'lastname' => 'Lastname',
         ];
         $this->newroleid = $this->getDataGenerator()->create_role(['name' => 'New role',
-            'shortname' => 'newrole']);
+            'shortname' => 'newrole', ]);
         $this->userdata = signup_setup_new_user($userdata); // Complete user profile.
     }
 
@@ -83,6 +74,7 @@ class auth_test extends advanced_testcase {
      * Test identifier checks
      *
      * @return void
+     * @covers \auth_psup\utils::is_valid_psup_identifier
      */
     public function test_utils_psup_identifier() {
         $this->resetAfterTest();
@@ -100,6 +92,7 @@ class auth_test extends advanced_testcase {
      * Test that an email is sent
      *
      * @return void
+     * @covers \auth_psup\auth_plugin_psup::user_signup
      */
     public function test_create_send_email() {
         $emailsink = $this->redirectEmails();
@@ -118,21 +111,30 @@ class auth_test extends advanced_testcase {
      * Test that event is created
      *
      * @return void
+     * @covers \auth_psup\auth_plugin_psup::user_signup
      */
     public function test_create_event() {
         $eventsink = $this->redirectEvents();
         @$this->authplugin->user_signup($this->userdata, false);
         $events = $eventsink->get_events();
-        $this->assertEquals(2, $eventsink->count());
-        $this->assertEquals('\core\event\user_created', $events[0]->get_data()['eventname']);
-        $this->assertEquals('\core\event\user_loggedin', $events[1]->get_data()['eventname']);
-        $this->assertEquals(['username' => '12345678'], $events[1]->get_data()['other']);
+        // There might be more events if other plugins are installed.
+        $this->assertGreaterThan(1, $eventsink->count());
+        $interestingevents = array_filter($events, function($e) {
+            return in_array($e->get_data()['eventname'], [
+                '\core\event\user_created',
+                '\core\event\user_loggedin',
+            ]);
+        });
+        $this->assertEquals('\core\event\user_created', $interestingevents[0]->get_data()['eventname']);
+        $this->assertEquals('\core\event\user_loggedin', $interestingevents[1]->get_data()['eventname']);
+        $this->assertEquals('12345678', $events[1]->get_data()['other']['username']);
     }
 
     /**
      * Test that email confirmation is working
      *
      * @return void
+     * @covers \auth_psup\auth_plugin_psup::user_signup
      */
     public function test_confirm_email() {
         @$this->authplugin->user_signup($this->userdata, false);
@@ -155,12 +157,14 @@ class auth_test extends advanced_testcase {
      *
      * @param string $roleshortname
      * @dataProvider role_assigned_data
+     * @return void
+     * @covers \auth_psup\auth_plugin_psup::user_signup
      */
     public function test_role_assigned($roleshortname) {
         global $DB;
         $roleid = 0;
         if (!empty($roleshortname)) {
-            $roleid = $DB->get_field('role', 'id', array('shortname' => $roleshortname));
+            $roleid = $DB->get_field('role', 'id', ['shortname' => $roleshortname]);
         }
         set_config('defaultsystemrole', $roleid, 'auth_psup');
         $context = context_system::instance();
@@ -179,9 +183,9 @@ class auth_test extends advanced_testcase {
     /**
      * Data for test_role_assigned test
      *
-     * @return string[][]
+     * @return array
      */
-    public function role_assigned_data() {
+    public static function role_assigned_data(): array {
         return [
             'no role is assigned' => [''],
             'manager is assigned' => ['manager'],

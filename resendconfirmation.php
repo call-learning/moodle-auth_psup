@@ -29,7 +29,7 @@ require_login(null, false);
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
 
 $PAGE->set_context(context_user::instance($USER->id));
-$PAGE->set_url('/auth/psup/resendconfirmation.php', array('returnurl' => $returnurl));
+$PAGE->set_url('/auth/psup/resendconfirmation.php', ['returnurl' => $returnurl]);
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('resendconfirmation:title', 'auth_psup'));
 $PAGE->set_heading(get_string('resendconfirmation:title', 'auth_psup'));

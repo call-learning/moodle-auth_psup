@@ -16,8 +16,15 @@
 /**
  * Execute auth_psup upgrade from the given old version.
  *
+ * @package     auth_psup
+ * @copyright   2020 Laurent David - CALL Learning <laurent@call-learning.fr>
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/**
+ * Execute auth_psup upgrade from the given old version.
  * @param int $oldversion
- * @return bool
+ * @return true
  * @throws downgrade_exception
  * @throws upgrade_exception
  */

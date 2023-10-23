@@ -59,16 +59,16 @@ class utils {
         /** @var core_renderer $icon */
         $icon = html_writer::tag('i',
             '',
-            array(
+            [
                 'class' => 'icon fa fa-exclamation-triangle text-warning fa-fw',
-                'title' => ''
-            )
+                'title' => '',
+            ]
         );
         $labelfor = \html_writer::label(
             $icon . $desc,
             $fieldname,
             true,
-            array('class' => 'psup-additional-description'));
+            ['class' => 'psup-additional-description']);
         $mform->addElement('static', $fieldname . 'desc', '', $labelfor);
     }
 
@@ -82,8 +82,8 @@ class utils {
         global $DB, $CFG;
 
         $errors = [];
-        if ($DB->record_exists('user', array('username' => $data['psupid'],
-            'mnethostid' => $CFG->mnet_localhost_id))) {
+        if ($DB->record_exists('user', ['username' => $data['psupid'],
+            'mnethostid' => $CFG->mnet_localhost_id, ])) {
             $errors['psupid'] = get_string('userexists', 'auth_psup');
         } else {
             // Check against regular expression.
@@ -128,13 +128,13 @@ class utils {
                 [
                     'title' => get_string('emailconfirmationresend'),
                     'url' => new moodle_url('/auth/psup/resendconfirmation.php',
-                        array('returnurl' => qualified_me())),
-                    'data' => []
+                        ['returnurl' => qualified_me()]),
+                    'data' => [],
                 ],
             ];
             $icon = [
                 'pix' => 'i/warning',
-                'component' => 'core'
+                'component' => 'core',
             ];
 
             notification::add_call_to_action($icon,
