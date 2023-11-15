@@ -42,9 +42,16 @@ lors de la création de votre compte.';
 $string['resendconfirmation:title'] = 'Renvoi de l\'email de confirmation';
 $string['pluginname'] = 'Authentification Parcoursup';
 $string['psupid'] = 'Identifiant Parcoursup';
+$string['psupid_desc'] = 'Parcoursup Identifier';
 $string['psupiddesc'] = 'Assurez-vous que votre identifiant est valide';
 $string['psupidregexp'] = 'Expression régulière pour valider les identifiants Parcoursup.';
 $string['psupidregexp_desc'] = 'Expression régulière de validation pour les identifiants Parcoursup. Cela permet
 de valider les identifiants Parcoursup.';
+$string['currentsession'] = 'Parcoursup current session';
+$string['currentsession_desc'] = 'Parcoursup current session. This is used to validate Parcoursup identifier for a session.';
+$string['profile:psupid'] = 'Parcoursup ID';
+$string['profile:psupsession'] = 'Parcoursup session';
+$string['profile:psupsession_desc'] = 'Parcoursup session for User (2023, 2024, ...)';
+$string['profile:psupcategory'] = 'Specific Parcoursup authentication User Fields';
 $string['privacy:metadata'] = 'Le plugin d\'authentification PSup (Parcoursup) ne stocke pas d\'information personelle';
 $string['userexists'] = 'Un utilisateur avec le même identifiant Parcoursup a déjà été créé.';

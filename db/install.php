@@ -28,6 +28,6 @@
  * @return true
  */
 function xmldb_auth_psup_install() {
-
+    \auth_psup\utils::create_user_fields_auth_psup();
     return true;
 }

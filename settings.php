@@ -40,6 +40,13 @@ if ($ADMIN->fulltree) {
         '/^[0-9]{6,8}$/',
         PARAM_TEXT));
 
+    $currentyear = date('Y');
+    $settings->add(new admin_setting_configtext('auth_psup/currentsession',
+        get_string('currentsession', 'auth_psup'),
+        get_string('currentsession_desc', 'auth_psup'),
+        $currentyear,
+        PARAM_INT));
+
     // Parcoursup default system role at creation.
     if (!during_initial_install()) {
         $context = context_system::instance();

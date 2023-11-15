@@ -21,8 +21,11 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use auth_psup\utils;
+
 /**
  * Execute auth_psup upgrade from the given old version.
+ *
  * @param int $oldversion
  * @return true
  * @throws downgrade_exception
@@ -37,6 +40,25 @@ function xmldb_auth_psup_upgrade($oldversion) {
         set_config('psupidregexp', '/^[0-9]{6,8}$/', 'auth_psup');
         upgrade_plugin_savepoint(true, 2020120209, 'auth', 'psup');
     }
+    if ($oldversion < 202311012023) {
+        global $DB;
+        \auth_psup\utils::create_user_fields_auth_psup();
+        $currentyear = date('Y');
+        set_config('psupcurrentsession', $currentyear, 'auth_psup');
+        // Now fill existing user data with current session and username.
+        $existingusers = $DB->get_recordset('user', ['auth' => 'psup']);
+        $DB->get_field('user_info_field', 'id', ['shortname' => 'psupcurrentsession']);
+        $oldsessionname = "prev";
+        foreach ($existingusers as $user) {
+            $currentpsupid = $user->username;
+            $user->username .= "_" . $oldsessionname;
+            $user->timemodified = time();
+            $DB->update_record('user', $user);
 
+            utils::create_user_info_data($user->id, $currentpsupid, $oldsessionname);
+        }
+        upgrade_plugin_savepoint(true, 202311012023, 'auth', 'psup');
+
+    }
     return true;
 }

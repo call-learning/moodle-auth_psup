@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'auth_psup';
-$plugin->release = '0.2.0';
-$plugin->version = 2021122900;
+$plugin->release = '2.0.0';
+$plugin->version = 202311012023;
 $plugin->requires = 2020061500;
 $plugin->maturity = MATURITY_STABLE;

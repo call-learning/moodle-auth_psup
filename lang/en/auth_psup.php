@@ -27,12 +27,12 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['auth_description'] = 'Parcoursup Authentification - allow user to be created at first, able to access
 a course and then confirmed';
-$string['createuserandpass'] = 'Create an account on {$a}';
 $string['defaultsystemrole'] = 'Default role when creating user';
 $string['defaultsystemrole_desc'] = 'Default role when creating user. It must be a Systemwide role. No role is assigne by default.';
 $string['emaildesc'] = 'The email should be the same as Parcoursup email.';
 $string['generalsettings'] = 'General settings';
 $string['generalsettings_desc'] = 'General settings';
+$string['createuserandpass'] = 'Créer un compte sur {$a}';
 $string['invalidpsupid'] = 'Invalid Parcoursup Identifier.';
 $string['missingpsupid'] = 'Missing parcoursup Identifier.';
 $string['mustvalidateemail'] = 'You should validate your email. Please follow instruction sent to you by email when you
@@ -45,5 +45,11 @@ $string['psupiddesc'] = 'Make sure that your identifier is valid';
 $string['psupidregexp'] = 'Parcoursup Identifier validation pattern.';
 $string['psupidregexp_desc'] = 'Parcoursup Identifier validation pattern (regular expression). We match
 this as valid Parcoursup identifier.';
+$string['currentsession'] = 'Parcoursup current session';
+$string['currentsession_desc'] = 'Parcoursup current session. This is used to validate Parcoursup identifier for a session.';
+$string['profile:psupid'] = 'Parcoursup ID';
+$string['profile:psupsession'] = 'Parcoursup session';
+$string['profile:psupsession_desc'] = 'Parcoursup session for User (2023, 2024, ...)';
+$string['profile:psupcategory'] = 'Specific Parcoursup authentication User Fields';
 $string['privacy:metadata'] = 'The Parcoursup authentication plugin does not store any personal data.';
 $string['userexists'] = 'A user with the same Parcoursup ID has already registered.';

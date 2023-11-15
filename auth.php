@@ -13,14 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-/**
- * Authentication class for psup is defined here.
- *
- * @package     auth_psup
- * @copyright   2020 Laurent David - CALL Learning <laurent@call-learning.fr>
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+use auth_psup\utils;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
@@ -33,7 +26,11 @@ require_once($CFG->libdir . '/authlib.php');
 // Override functions as needed.
 
 /**
- * Authentication class for psup.
+ * Authentication class for psup is defined here.
+ *
+ * @package     auth_psup
+ * @copyright   2020 Laurent David - CALL Learning <laurent@call-learning.fr>
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class auth_plugin_psup extends auth_plugin_base {
 
@@ -60,7 +57,6 @@ class auth_plugin_psup extends auth_plugin_base {
         // Remove if a different authentication method is desired.
         $user = $DB->get_record('user',
             ['username' => $username, 'mnethostid' => $CFG->mnet_localhost_id, 'auth' => $this->authtype]);
-
         // User does not exist.
         if (!$user) {
             return false;
@@ -194,6 +190,39 @@ class auth_plugin_psup extends auth_plugin_base {
     }
 
     /**
+     * Hook for overriding behaviour of login page.
+     * As we identify the user through the Parcoursup ID which is a custom field, we need to
+     * ensure that this is taking the right username.
+     *
+     */
+    public function loginpage_hook() {
+        global $frm;
+        $frm = data_submitted();
+        if (!empty($frm->username)) {
+            $formuser = utils::get_user_with_psupid_and_session($frm->username, $this->authtype);
+            if ($formuser) {
+                $frm->username = $formuser->username;
+            }
+        }
+    }
+
+    /**
+     * Hook for overriding behaviour of logout page.
+     * This method is called from login/logout.php page for all enabled auth plugins.
+     *
+     */
+    public function logoutpage_hook() {
+        global $USER;
+        global $CFG;
+        if ($USER->auth == $this->authtype) {
+            $parcoursupid = utils::get_user_info_data($USER->id, utils::AUTH_PSUP_USERNAME_FIELD);
+            if (!empty($CFG->rememberusername)) {
+                set_moodle_cookie($parcoursupid);
+            }
+        }
+    }
+
+    /**
      * Sign up a new user ready for confirmation.
      * Password is passed in plaintext.
      *
@@ -233,9 +262,9 @@ class auth_plugin_psup extends auth_plugin_base {
 
         // Save wantsurl against user's profile, so we can return them there upon confirmation.
         if (!empty($SESSION->wantsurl)) {
-            set_user_preference(\auth_psup\utils::USER_PREFS_WANTS_URL, $SESSION->wantsurl, $user);
+            set_user_preference(utils::USER_PREFS_WANTS_URL, $SESSION->wantsurl, $user);
         }
-        set_user_preference(\auth_psup\utils::USER_PREFS_EMAIL_CONFIRMED, '0', $user);
+        set_user_preference(utils::USER_PREFS_EMAIL_CONFIRMED, '0', $user);
 
         // Trigger event.
         \core\event\user_created::create_from_userid($user->id)->trigger();
@@ -300,20 +329,20 @@ class auth_plugin_psup extends auth_plugin_base {
         $user = get_complete_user_data('username', $username);
 
         if (!empty($user)) {
-            $emailconfirmed = get_user_preferences(\auth_psup\utils::USER_PREFS_EMAIL_CONFIRMED, false, $user);
+            $emailconfirmed = get_user_preferences(utils::USER_PREFS_EMAIL_CONFIRMED, false, $user);
             if ($user->auth != $this->authtype) {
                 return AUTH_CONFIRM_ERROR;
             } else if ($user->secret == $confirmsecret && $emailconfirmed) {
                 return AUTH_CONFIRM_ALREADY;
 
             } else if ($user->secret == $confirmsecret) {   // They have provided the secret key to confirm email.
-                if ($wantsurl = get_user_preferences(\auth_psup\utils::USER_PREFS_WANTS_URL, false, $user)) {
+                if ($wantsurl = get_user_preferences(utils::USER_PREFS_WANTS_URL, false, $user)) {
                     global $SESSION;
                     // Ensure user gets returned to page they were trying to access before signing up.
                     $SESSION->wantsurl = $wantsurl;
                     unset_user_preference('auth_email_wantsurl', $user);
                 }
-                set_user_preference(\auth_psup\utils::USER_PREFS_EMAIL_CONFIRMED, '1', $user);
+                set_user_preference(utils::USER_PREFS_EMAIL_CONFIRMED, '1', $user);
                 return AUTH_CONFIRM_OK;
             }
             return AUTH_CONFIRM_FAIL; // Does not match.

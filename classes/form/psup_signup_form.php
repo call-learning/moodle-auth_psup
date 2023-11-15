@@ -23,6 +23,7 @@ global $CFG;
 require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->dirroot . '/user/profile/lib.php');
 require_once($CFG->dirroot . '/user/editlib.php');
+
 /**
  * User sign-up form for Psup.
  *
@@ -44,6 +45,13 @@ class psup_signup_form extends \moodleform implements \renderable, \templatable 
         // Fields needed for form validation.
         $mform->addElement('hidden', 'username');
         $mform->setType('username', PARAM_RAW);
+
+        // Add the fields for the user custom fields that will be automatically added when user signs up.
+        $mform->addElement('hidden', 'profile_field_' . utils::AUTH_PSUP_USERNAME_FIELD);
+        $mform->addElement('hidden', 'profile_field_' . utils::AUTH_PSUP_SESSION_FIELD);
+        $mform->setType('profile_field_' . utils::AUTH_PSUP_USERNAME_FIELD, PARAM_ALPHANUMEXT);
+        $mform->setType('profile_field_' . utils::AUTH_PSUP_SESSION_FIELD, PARAM_ALPHANUMEXT);
+        // Email.
         $mform->addElement('hidden', 'email2');
         $mform->setType('email2', core_user::get_property_type('email'));
 
@@ -119,7 +127,10 @@ class psup_signup_form extends \moodleform implements \renderable, \templatable 
     public function definition_after_data() {
         $mform = $this->_form;
         $mform->applyFilter('psupid', 'trim');
-        $mform->setConstant('username', $mform->getSubmitValue('psupid'));
+        $currentsession = get_config('auth_psup', 'currentsession');
+        $mform->setConstant('username', $mform->getSubmitValue('psupid') . '_' . $currentsession);
+        $mform->setConstant('profile_field_' . utils::AUTH_PSUP_USERNAME_FIELD, $mform->getSubmitValue('psupid'));
+        $mform->setConstant('profile_field_' . utils::AUTH_PSUP_SESSION_FIELD, $currentsession);
         $mform->setConstant('email2', $mform->getSubmitValue('email'));
 
         // Trim required name fields.
