@@ -107,6 +107,7 @@ class utils {
      */
     public static function get_user_with_psupid_and_session(string $psupid, string $authtype) {
         global $DB, $CFG;
+        $currentsession = get_config('auth_psup', 'currentsession');
         $user = $DB->get_record_sql('SELECT DISTINCT u.* FROM {user} u
                 LEFT JOIN {user_info_data} uidataid ON u.id = uidataid.userid
                 LEFT JOIN {user_info_field} uifieldid ON uifieldid.id = uidataid.fieldid
@@ -114,11 +115,17 @@ class utils {
                 LEFT JOIN {user_info_data} uidatasession ON u.id = uidatasession.userid
                 LEFT JOIN {user_info_field} uifieldsession ON uifieldsession.id = uidatasession.fieldid
                     AND uifieldsession.shortname = :psupsessionfieldname
-                WHERE uidataid.data = :psupid AND u.mnethostid = :mnethostid AND u.auth = :auth',
+                WHERE uidataid.data = :psupid 
+                    AND uidatasession.data = :currentsession
+                    AND uifieldsession.id IS NOT NULL
+                    AND uifieldid.id IS NOT NULL
+                    AND u.mnethostid = :mnethostid
+                    AND u.auth = :auth',
             [
                 'psupidfieldname' => self::AUTH_PSUP_USERNAME_FIELD,
                 'psupsessionfieldname' => self::AUTH_PSUP_SESSION_FIELD,
                 'psupid' => $psupid,
+                'currentsession' => $currentsession,
                 'mnethostid' => $CFG->mnet_localhost_id,
                 'auth' => $authtype,
             ]);

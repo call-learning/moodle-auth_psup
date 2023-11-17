@@ -4,9 +4,12 @@ Feature: The user should be logged in directly when signing up.
   Background:
     Given the following config values are set as admin:
       | registerauth | psup |
+    And the following config values are set as admin:
+      | currentsession | 2023 | auth_psup |
     And the following "users" exist:
-      | username | firstname | lastname | email          |
-      | 101010   | John      | Doe      | s1@example.com |
+      | username    | firstname | lastname | email           | profile_field_psupid | profile_field_psupsession | auth |
+      | 101010_2023 | John      | Doe      | s1@example.com  | 101010               | 2023                      | psup |
+      | 101010_2024 | John      | Doe2     | s10@example.com | 101010               | 2024                      | psup |
 
   Scenario: As a user I want to create a new account
     Given I am on site homepage
