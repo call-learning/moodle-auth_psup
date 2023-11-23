@@ -115,7 +115,7 @@ class utils {
                 LEFT JOIN {user_info_data} uidatasession ON u.id = uidatasession.userid
                 LEFT JOIN {user_info_field} uifieldsession ON uifieldsession.id = uidatasession.fieldid
                     AND uifieldsession.shortname = :psupsessionfieldname
-                WHERE uidataid.data = :psupid 
+                WHERE uidataid.data = :psupid
                     AND uidatasession.data = :currentsession
                     AND uifieldsession.id IS NOT NULL
                     AND uifieldid.id IS NOT NULL
